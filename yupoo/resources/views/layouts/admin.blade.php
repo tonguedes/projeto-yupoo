@@ -1,29 +1,71 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
+<div class="min-h-screen bg-gray-100">
 
-    <meta charset="UTF-8">
+    <div class="flex">
 
-    <title>Yupoo Admin</title>
+        {{-- Sidebar --}}
+        <aside class="w-64 bg-slate-900 text-white min-h-screen">
 
-    @vite(['resources/css/app.css','resources/js/app.js'])
+            <div class="p-6 text-2xl font-bold border-b border-slate-700">
+                YUPOO
+            </div>
 
-</head>
+            <nav class="mt-6">
 
-<body class="bg-gray-100">
+                <a href="{{ route('dashboard') }}"
+                    class="block px-6 py-3 hover:bg-slate-800 transition">
 
-<div class="flex">
+                    🏠 Dashboard
 
-    @include('layouts.sidebar')
+                </a>
 
-    <main class="flex-1 p-8">
+                <a href="{{ route('produtos.index') }}"
+                    class="block px-6 py-3 hover:bg-slate-800 transition">
 
-        {{ $slot }}
+                    📦 Produtos
 
-    </main>
+                </a>
+
+                <a href="{{ route('categorias.index') }}"
+                    class="block px-6 py-3 hover:bg-slate-800 transition">
+
+                    📂 Categorias
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        {{-- Conteúdo --}}
+        <main class="flex-1">
+
+            {{-- Topbar --}}
+            <header class="bg-white shadow px-8 py-5 flex justify-between">
+
+                <h1 class="text-xl font-bold">
+
+                    Painel Administrativo
+
+                </h1>
+
+                <div>
+
+                    {{ Auth::user()->name }}
+
+                </div>
+
+            </header>
+
+
+            <section class="p-8">
+
+                {{ $slot }}
+
+            </section>
+
+        </main>
+
+    </div>
 
 </div>
-
-</body>
-
-</html>

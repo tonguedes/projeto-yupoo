@@ -14,15 +14,17 @@ class ProdutoController extends Controller
         private ProdutoService $produtoService
     ) {}
 
-    public function index()
-    {
-        $produtos = Produto::with('categoria')
-            ->latest()
-            ->paginate(12);
+   public function index()
+{
+    $produtos = Produto::with([
+        'categoria',
+        'imagens'
+    ])
+    ->latest()
+    ->paginate(12);
 
-        return view('produtos.index', compact('produtos'));
-    }
-
+    return view('produtos.index', compact('produtos'));
+}
     public function create()
     {
         $categorias = Categoria::orderBy('nome')->get();
