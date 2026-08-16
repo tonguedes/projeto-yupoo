@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\ProdutoImagemController;
@@ -22,6 +23,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/categorias', CategoriaController::class);
     Route::resource('/produtos', ProdutoController::class);
+
+    Route::get('/catalogo', [CatalogoController::class, 'index'])
+        ->name('catalogo.index');
+
+    Route::get('/catalogo/{produto}', [CatalogoController::class, 'show'])
+        ->name('catalogo.show');
 
     //deletar imagens do produto
     Route::delete(
