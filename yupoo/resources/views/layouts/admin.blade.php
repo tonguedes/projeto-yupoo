@@ -385,6 +385,13 @@
             </a>
 
 
+            <a href="{{ route('catalogo.index') }}"
+   target="_blank"
+   class="block px-6 py-3 hover:bg-slate-800">
+
+    🌐 Ver Catálogo
+
+</a>
 
             {{-- USUÁRIO --}}
 

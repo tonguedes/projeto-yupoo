@@ -5,9 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         Catálogo - YUPOO
@@ -69,13 +67,11 @@
         </div>
 
 
-        {{-- BUSCA --}}
+        {{-- FILTROS --}}
 
         <div class="bg-white rounded-2xl shadow-sm border p-5 mb-8">
 
-            <form
-                action="{{ route('catalogo.index') }}"
-                method="GET">
+            <form action="{{ route('catalogo.index') }}" method="GET">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -84,23 +80,16 @@
 
                     <div>
 
-                        <label
-                            for="busca"
-                            class="block text-sm font-semibold mb-2">
+                        <label for="busca" class="block text-sm font-semibold mb-2">
 
-                            Buscar
+                            Buscar produto
 
                         </label>
 
-                        <input
-                            type="text"
-                            id="busca"
-                            name="busca"
-                            value="{{ request('busca') }}"
-                            placeholder="Nome ou código..."
-                            class="w-full border rounded-xl px-4 py-3
-                                   focus:ring-2 focus:ring-indigo-500
-                                   focus:border-indigo-500">
+                        <input type="text" id="busca" name="busca" value="{{ request('busca') }}"
+                            placeholder="Nome ou código..." class="w-full border rounded-xl px-4 py-3
+                           focus:ring-2 focus:ring-indigo-500
+                           focus:border-indigo-500">
 
                     </div>
 
@@ -109,20 +98,15 @@
 
                     <div>
 
-                        <label
-                            for="categoria_id"
-                            class="block text-sm font-semibold mb-2">
+                        <label for="categoria_id" class="block text-sm font-semibold mb-2">
 
                             Categoria
 
                         </label>
 
-                        <select
-                            id="categoria_id"
-                            name="categoria_id"
-                            class="w-full border rounded-xl px-4 py-3
-                                   focus:ring-2 focus:ring-indigo-500
-                                   focus:border-indigo-500">
+                        <select id="categoria_id" name="categoria_id" class="w-full border rounded-xl px-4 py-3
+                           focus:ring-2 focus:ring-indigo-500
+                           focus:border-indigo-500">
 
                             <option value="">
                                 Todas as categorias
@@ -130,9 +114,7 @@
 
                             @foreach($categorias as $categoria)
 
-                                <option
-                                    value="{{ $categoria->id }}"
-                                    {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>
+                                <option value="{{ $categoria->id }}" {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>
 
                                     {{ $categoria->nome }}
 
@@ -145,26 +127,101 @@
                     </div>
 
 
-                    {{-- BOTÃO --}}
+                    {{-- BOTÕES --}}
 
-                    <div class="flex items-end">
+                    <div class="flex items-end gap-3">
 
-                        <button
-                            type="submit"
-                            class="w-full bg-indigo-600 hover:bg-indigo-700
-                                   text-white font-semibold
-                                   px-5 py-3 rounded-xl
-                                   transition">
+                        <button type="submit" class="flex-1 bg-indigo-600
+                           hover:bg-indigo-700
+                           text-white font-semibold
+                           px-5 py-3 rounded-xl
+                           transition">
 
-                            Buscar produtos
+                            Buscar
 
                         </button>
+
+                        <a href="{{ route('catalogo.index') }}" class="bg-gray-200
+                           hover:bg-gray-300
+                           text-gray-700
+                           font-semibold
+                           px-5 py-3 rounded-xl
+                           transition">
+
+                            Limpar
+
+                        </a>
 
                     </div>
 
                 </div>
 
             </form>
+
+
+            {{-- CATEGORIAS RÁPIDAS --}}
+
+            @if($categorias->count())
+
+                    <div class="border-t mt-5 pt-5">
+
+                        <p class="text-sm font-semibold text-gray-600 mb-3">
+
+                            Categorias
+
+                        </p>
+
+                        <div class="flex flex-wrap gap-2">
+
+
+                            {{-- TODAS --}}
+
+                            <a href="{{ route('catalogo.index') }}" class="
+                                px-4 py-2
+                                rounded-full
+                                text-sm font-semibold
+                                transition
+
+                                {{ !request('categoria_id')
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }}
+                            ">
+
+                                Todas
+
+                            </a>
+
+
+                            {{-- CATEGORIAS --}}
+
+                            @foreach($categorias as $categoria)
+
+                                            <a href="{{ route('catalogo.index', [
+                                    'categoria_id' => $categoria->id
+                                ]) }}" class="
+                                                    px-4 py-2
+                                                    rounded-full
+                                                    text-sm font-semibold
+                                                    transition
+
+                                                    {{ request('categoria_id') == $categoria->id
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    }}
+                                                ">
+
+                                                {{ $categoria->nome }}
+
+                                            </a>
+
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+            @endif
 
         </div>
 
@@ -177,11 +234,9 @@
 
                 @foreach($produtos as $produto)
 
-                    <a
-                        href="{{ route('catalogo.show', $produto) }}"
-                        class="group bg-white rounded-2xl
-                               shadow-sm border overflow-hidden
-                               hover:shadow-xl transition">
+                    <a href="{{ route('catalogo.show', $produto) }}" class="group bg-white rounded-2xl
+                                       shadow-sm border overflow-hidden
+                                       hover:shadow-xl transition">
 
 
                         {{-- IMAGEM --}}
@@ -190,18 +245,14 @@
 
                             @if($produto->capa)
 
-                                <img
-                                    src="{{ asset('storage/' . $produto->capa) }}"
-                                    alt="{{ $produto->nome }}"
-                                    class="w-full h-64 object-cover
-                                           group-hover:scale-105
-                                           transition duration-300">
+                                <img src="{{ asset('storage/' . $produto->capa) }}" alt="{{ $produto->nome }}" class="w-full h-64 object-cover
+                                                       group-hover:scale-105
+                                                       transition duration-300">
 
                             @else
 
-                                <div
-                                    class="w-full h-64 bg-gray-100
-                                           flex items-center justify-center">
+                                <div class="w-full h-64 bg-gray-100
+                                                       flex items-center justify-center">
 
                                     <span class="text-gray-400">
                                         Sem imagem
@@ -218,11 +269,10 @@
 
                         <div class="p-5">
 
-                            <h3
-                                class="text-lg font-bold
-                                       text-gray-800
-                                       group-hover:text-indigo-600
-                                       transition">
+                            <h3 class="text-lg font-bold
+                                               text-gray-800
+                                               group-hover:text-indigo-600
+                                               transition">
 
                                 {{ $produto->nome }}
 
@@ -231,13 +281,12 @@
 
                             @if($produto->categoria)
 
-                                <span
-                                    class="inline-block mt-3
-                                           bg-indigo-100
-                                           text-indigo-700
-                                           text-xs font-semibold
-                                           px-3 py-1
-                                           rounded-full">
+                                <span class="inline-block mt-3
+                                                       bg-indigo-100
+                                                       text-indigo-700
+                                                       text-xs font-semibold
+                                                       px-3 py-1
+                                                       rounded-full">
 
                                     {{ $produto->categoria->nome }}
 
@@ -278,10 +327,9 @@
 
             {{-- SEM PRODUTOS --}}
 
-            <div
-                class="bg-white rounded-2xl
-                       border shadow-sm
-                       p-12 text-center">
+            <div class="bg-white rounded-2xl
+                           border shadow-sm
+                           p-12 text-center">
 
                 <h3 class="text-xl font-bold text-gray-700">
 
@@ -295,12 +343,10 @@
 
                 </p>
 
-                <a
-                    href="{{ route('catalogo.index') }}"
-                    class="inline-block mt-5
-                           bg-indigo-600 hover:bg-indigo-700
-                           text-white px-5 py-3
-                           rounded-xl">
+                <a href="{{ route('catalogo.index') }}" class="inline-block mt-5
+                               bg-indigo-600 hover:bg-indigo-700
+                               text-white px-5 py-3
+                               rounded-xl">
 
                     Limpar filtros
 

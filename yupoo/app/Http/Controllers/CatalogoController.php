@@ -12,9 +12,6 @@ class CatalogoController extends Controller
         private CatalogoService $catalogoService
     ) {}
 
-    /**
-     * Exibe o catálogo público.
-     */
     public function index(Request $request)
     {
         $produtos = $this->catalogoService->listar([
@@ -30,9 +27,6 @@ class CatalogoController extends Controller
         ));
     }
 
-    /**
-     * Exibe os detalhes de um produto.
-     */
     public function show(Produto $produto)
     {
         $produto = $this->catalogoService
@@ -41,4 +35,3 @@ class CatalogoController extends Controller
         return view('catalogo.show', compact('produto'));
     }
 }
-
