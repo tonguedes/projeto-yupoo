@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TenantScope;
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Produto extends Model
 {
@@ -12,9 +13,21 @@ class Produto extends Model
         'nome',
         'codigo',
         'descricao',
-        'capa'
+        'capa',
+        'tenant_id',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new TenantScope());
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     public function categoria()
     {

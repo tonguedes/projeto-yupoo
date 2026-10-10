@@ -9,6 +9,7 @@ class CategoriaService
 {
     public function store(array $dados): Categoria
     {
+        $dados['tenant_id'] = auth()->user()->tenant_id;
         $dados['slug'] = Str::slug($dados['nome']);
 
         return Categoria::create($dados);
@@ -16,6 +17,7 @@ class CategoriaService
 
     public function update(Categoria $categoria, array $dados): Categoria
     {
+        $dados['tenant_id'] = auth()->user()->tenant_id;
         $dados['slug'] = Str::slug($dados['nome']);
 
         $categoria->update($dados);
@@ -28,4 +30,3 @@ class CategoriaService
         $categoria->delete();
     }
 }
-

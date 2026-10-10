@@ -4,15 +4,18 @@ namespace App\Services;
 
 use App\Models\Categoria;
 use App\Models\Produto;
+use App\Models\Tenant;
 
 class CatalogoService
 {
-    public function listar(array $filtros = [])
+    public function listar(Tenant $tenant, array $filtros = [])
     {
-        $query = Produto::with([
-            'categoria',
-            'imagens',
-        ]);
+        $query = Produto::withoutGlobalScope(\App\Models\Scopes\TenantScope::class)
+            ->where('tenant_id', $tenant->id)
+            ->with([
+                'categoria',
+                'imagens',
+            ]);
 
         // Busca por nome ou código
         if (!empty($filtros['busca'])) {
@@ -42,16 +45,25 @@ class CatalogoService
             ->withQueryString();
     }
 
-    public function categorias()
+    public function categorias(Tenant $tenant)
     {
-        return Categoria::orderBy('nome')->get();
+        return Categoria::withoutGlobalScope(\App\Models\Scopes\TenantScope::class)
+            ->where('tenant_id', $tenant->id)
+            ->orderBy('nome')
+            ->get();
     }
 
-    public function encontrarProduto(Produto $produto): Produto
-    {
-        return $produto->load([
-            'categoria',
-            'imagens',
-        ]);
+    public function encontrarProduto(
+        Tenant $tenant,
+        Produto $produto
+    ): Produto {
+        return Produto::withoutGlobalScope(\App\Models\Scopes\TenantScope::class)
+            ->where('tenant_id', $tenant->id)
+            ->where('id', $produto->id)
+            ->with([
+                'categoria',
+                'imagens',
+            ])
+            ->firstOrFail();
     }
 }

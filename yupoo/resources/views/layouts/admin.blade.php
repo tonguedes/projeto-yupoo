@@ -15,7 +15,6 @@
 
 
     <style>
-
         /*
         |--------------------------------------------------------------------------
         | MENU
@@ -201,7 +200,6 @@
             }
 
         }
-
     </style>
 
 </head>
@@ -210,303 +208,34 @@
 <body class="bg-gray-100">
 
 
-<div class="flex min-h-screen">
+    <div class="flex min-h-screen">
 
 
-    {{-- ========================================================= --}}
-    {{-- SIDEBAR --}}
-    {{-- ========================================================= --}}
+        {{-- ========================================================= --}}
+        {{-- SIDEBAR --}}
+        {{-- ========================================================= --}}
 
-    <aside
-        id="sidebar"
-        class="w-64 bg-slate-900 text-white overflow-hidden">
+        <aside id="sidebar" class="w-64 bg-slate-900 text-white overflow-hidden">
 
 
-        {{-- LOGO --}}
+            {{-- LOGO --}}
 
-        <div
-            id="logo"
-            class="border-b border-slate-700 p-6">
+            <div id="logo" class="border-b border-slate-700 p-6">
 
 
-            <div class="text-center">
+                <div class="text-center">
 
 
-                <h1
-                    id="logo-title"
-                    class="text-2xl font-bold tracking-wider">
+                    <h1 id="logo-title" class="text-2xl font-bold tracking-wider">
 
-                    YUPOO
+                        YUPOO
 
-                </h1>
+                    </h1>
 
 
-                <p
-                    id="logo-subtitle"
-                    class="text-xs text-slate-400 mt-1 menu-text">
+                    <p id="logo-subtitle" class="text-xs text-slate-400 mt-1 menu-text">
 
-                    Painel Administrativo
-
-                </p>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        {{-- ===================================================== --}}
-        {{-- MENU --}}
-        {{-- ===================================================== --}}
-
-        <nav class="mt-6">
-
-
-            {{-- GERAL --}}
-
-            <div class="px-6 mb-3 menu-text">
-
-                <span
-                    class="text-xs uppercase text-slate-500 font-bold">
-
-                    Geral
-
-                </span>
-
-            </div>
-
-
-            {{-- DASHBOARD --}}
-
-            <a
-                href="{{ route('dashboard') }}"
-                class="menu-item
-                {{ request()->routeIs('dashboard')
-                    ? 'bg-slate-800 border-l-4 border-indigo-500'
-                    : '' }}">
-
-
-                <x-heroicon-o-home class="w-6 h-6"/>
-
-
-                <span class="menu-text">
-
-                    Dashboard
-
-                </span>
-
-
-                <span class="sidebar-tooltip">
-
-                    Dashboard
-
-                </span>
-
-
-            </a>
-
-
-
-            {{-- CATÁLOGO --}}
-
-            <div class="px-6 mt-8 mb-3 menu-text">
-
-                <span
-                    class="text-xs uppercase text-slate-500 font-bold">
-
-                    Catálogo
-
-                </span>
-
-            </div>
-
-
-
-            {{-- PRODUTOS --}}
-
-            <a
-                href="{{ route('produtos.index') }}"
-                class="menu-item
-                {{ request()->routeIs('produtos.*')
-                    ? 'bg-slate-800 border-l-4 border-indigo-500'
-                    : '' }}">
-
-
-                <x-heroicon-o-cube class="w-6 h-6"/>
-
-
-                <span class="menu-text">
-
-                    Produtos
-
-                </span>
-
-
-                <span class="sidebar-tooltip">
-
-                    Produtos
-
-                </span>
-
-
-            </a>
-
-
-
-            {{-- CATEGORIAS --}}
-
-            <a
-                href="{{ route('categorias.index') }}"
-                class="menu-item
-                {{ request()->routeIs('categorias.*')
-                    ? 'bg-slate-800 border-l-4 border-indigo-500'
-                    : '' }}">
-
-
-                <x-heroicon-o-folder class="w-6 h-6"/>
-
-
-                <span class="menu-text">
-
-                    Categorias
-
-                </span>
-
-
-                <span class="sidebar-tooltip">
-
-                    Categorias
-
-                </span>
-
-
-            </a>
-
-
-            <a href="{{ route('catalogo.index') }}"
-   target="_blank"
-   class="block px-6 py-3 hover:bg-slate-800">
-
-    🌐 Ver Catálogo
-
-</a>
-
-            {{-- USUÁRIO --}}
-
-            <div class="px-6 mt-8 mb-3 menu-text">
-
-                <span
-                    class="text-xs uppercase text-slate-500 font-bold">
-
-                    Usuário
-
-                </span>
-
-            </div>
-
-
-
-            {{-- PERFIL --}}
-
-            <a
-                href="{{ route('profile.edit') }}"
-                class="menu-item">
-
-
-                <x-heroicon-o-user class="w-6 h-6"/>
-
-
-                <span class="menu-text">
-
-                    Meu Perfil
-
-                </span>
-
-
-                <span class="sidebar-tooltip">
-
-                    Meu Perfil
-
-                </span>
-
-
-            </a>
-
-
-        </nav>
-
-
-    </aside>
-
-
-
-    {{-- ========================================================= --}}
-    {{-- ÁREA PRINCIPAL --}}
-    {{-- ========================================================= --}}
-
-    <div class="flex-1 flex flex-col">
-
-
-        {{-- ===================================================== --}}
-        {{-- HEADER --}}
-        {{-- ===================================================== --}}
-
-        <header
-            class="bg-white shadow px-8 py-5 flex items-center justify-between">
-
-
-            {{-- ESQUERDA --}}
-
-            <div class="flex items-center gap-4">
-
-
-                {{-- BOTÃO SIDEBAR --}}
-
-                <button
-                    id="toggleSidebar"
-                    type="button"
-                    class="text-gray-600 hover:text-indigo-600 transition">
-
-
-                    <x-heroicon-o-bars-3 class="w-8 h-8"/>
-
-
-                </button>
-
-
-
-                <h1
-                    class="text-xl font-bold text-gray-800">
-
-                    Painel Administrativo
-
-                </h1>
-
-
-            </div>
-
-
-
-            {{-- DIREITA --}}
-
-            <div class="flex items-center gap-5">
-
-
-                <div class="text-right">
-
-
-                    <p class="font-semibold text-gray-800">
-
-                        {{ Auth::user()->name }}
-
-                    </p>
-
-
-                    <p class="text-xs text-gray-500">
-
-                        Administrador
+                        Painel Administrativo
 
                     </p>
 
@@ -514,215 +243,452 @@
                 </div>
 
 
-
-                {{-- LOGOUT --}}
-
-                <form
-                    action="{{ route('logout') }}"
-                    method="POST">
+            </div>
 
 
-                    @csrf
+
+            {{-- ===================================================== --}}
+            {{-- MENU --}}
+            {{-- ===================================================== --}}
+
+            <nav class="mt-6">
 
 
-                    <button
-                        type="submit"
-                        class="text-red-600 hover:text-red-800 transition"
-                        title="Sair">
+                {{-- GERAL --}}
+
+                <div class="px-6 mb-3 menu-text">
+
+                    <span class="text-xs uppercase text-slate-500 font-bold">
+
+                        Geral
+
+                    </span>
+
+                </div>
 
 
-                        <x-heroicon-o-arrow-right-on-rectangle
-                            class="w-6 h-6"/>
+                {{-- DASHBOARD --}}
+
+                <a href="{{ route('dashboard') }}" class="menu-item
+                {{ request()->routeIs('dashboard')
+    ? 'bg-slate-800 border-l-4 border-indigo-500'
+    : '' }}">
+
+
+                    <x-heroicon-o-home class="w-6 h-6" />
+
+
+                    <span class="menu-text">
+
+                        Dashboard
+
+                    </span>
+
+
+                    <span class="sidebar-tooltip">
+
+                        Dashboard
+
+                    </span>
+
+
+                </a>
+
+
+
+                {{-- CATÁLOGO --}}
+
+                <div class="px-6 mt-8 mb-3 menu-text">
+
+                    <span class="text-xs uppercase text-slate-500 font-bold">
+
+                        Catálogo
+
+                    </span>
+
+                </div>
+
+
+
+                {{-- PRODUTOS --}}
+
+                <a href="{{ route('produtos.index') }}" class="menu-item
+                {{ request()->routeIs('produtos.*')
+    ? 'bg-slate-800 border-l-4 border-indigo-500'
+    : '' }}">
+
+
+                    <x-heroicon-o-cube class="w-6 h-6" />
+
+
+                    <span class="menu-text">
+
+                        Produtos
+
+                    </span>
+
+
+                    <span class="sidebar-tooltip">
+
+                        Produtos
+
+                    </span>
+
+
+                </a>
+
+
+
+                {{-- CATEGORIAS --}}
+
+                <a href="{{ route('categorias.index') }}" class="menu-item
+                {{ request()->routeIs('categorias.*')
+    ? 'bg-slate-800 border-l-4 border-indigo-500'
+    : '' }}">
+
+
+                    <x-heroicon-o-folder class="w-6 h-6" />
+
+
+                    <span class="menu-text">
+
+                        Categorias
+
+                    </span>
+
+
+                    <span class="sidebar-tooltip">
+
+                        Categorias
+
+                    </span>
+
+
+                </a>
+
+
+                blade
+                <a href="{{ route('catalogo.index', [
+    'slug' => auth()->user()->tenant->slug
+]) }}" target="_blank" class="block px-6 py-3 hover:bg-slate-800">
+                    🌐 Ver Catálogo
+                </a>
+
+
+                {{-- USUÁRIO --}}
+
+                <div class="px-6 mt-8 mb-3 menu-text">
+
+                    <span class="text-xs uppercase text-slate-500 font-bold">
+
+                        Usuário
+
+                    </span>
+
+                </div>
+
+
+
+                {{-- PERFIL --}}
+
+                <a href="{{ route('profile.edit') }}" class="menu-item">
+
+
+                    <x-heroicon-o-user class="w-6 h-6" />
+
+
+                    <span class="menu-text">
+
+                        Meu Perfil
+
+                    </span>
+
+
+                    <span class="sidebar-tooltip">
+
+                        Meu Perfil
+
+                    </span>
+
+
+                </a>
+
+
+            </nav>
+
+
+        </aside>
+
+
+
+        {{-- ========================================================= --}}
+        {{-- ÁREA PRINCIPAL --}}
+        {{-- ========================================================= --}}
+
+        <div class="flex-1 flex flex-col">
+
+
+            {{-- ===================================================== --}}
+            {{-- HEADER --}}
+            {{-- ===================================================== --}}
+
+            <header class="bg-white shadow px-8 py-5 flex items-center justify-between">
+
+
+                {{-- ESQUERDA --}}
+
+                <div class="flex items-center gap-4">
+
+
+                    {{-- BOTÃO SIDEBAR --}}
+
+                    <button id="toggleSidebar" type="button" class="text-gray-600 hover:text-indigo-600 transition">
+
+
+                        <x-heroicon-o-bars-3 class="w-8 h-8" />
 
 
                     </button>
 
 
-                </form>
 
+                    <h1 class="text-xl font-bold text-gray-800">
 
-            </div>
+                        Painel Administrativo
 
-
-        </header>
-
-
-
-        {{-- ===================================================== --}}
-        {{-- CONTEÚDO --}}
-        {{-- ===================================================== --}}
-
-        <main class="flex-1 p-8">
-
-
-            {{-- MENSAGEM DE SUCESSO --}}
-
-            @if(session('success'))
-
-                <div
-                    class="mb-6 bg-green-100 border border-green-300 text-green-700 rounded-lg p-4">
-
-
-                    {{ session('success') }}
+                    </h1>
 
 
                 </div>
 
-            @endif
+
+
+                {{-- DIREITA --}}
+
+                <div class="flex items-center gap-5">
+
+
+                    <div class="text-right">
+
+
+                        <p class="font-semibold text-gray-800">
+
+                            {{ Auth::user()->name }}
+
+                        </p>
+
+
+                        <p class="text-xs text-gray-500">
+
+                            Administrador
+
+                        </p>
+
+
+                    </div>
 
 
 
-            {{-- ERROS DE VALIDAÇÃO --}}
+                    {{-- LOGOUT --}}
 
-            @if($errors->any())
-
-                <div
-                    class="mb-6 bg-red-100 border border-red-300 text-red-700 rounded-lg p-4">
+                    <form action="{{ route('logout') }}" method="POST">
 
 
-                    <ul class="list-disc pl-5">
+                        @csrf
 
 
-                        @foreach($errors->all() as $erro)
-
-                            <li>
-
-                                {{ $erro }}
-
-                            </li>
-
-                        @endforeach
+                        <button type="submit" class="text-red-600 hover:text-red-800 transition" title="Sair">
 
 
-                    </ul>
+                            <x-heroicon-o-arrow-right-on-rectangle class="w-6 h-6" />
+
+
+                        </button>
+
+
+                    </form>
 
 
                 </div>
 
-            @endif
+
+            </header>
 
 
 
-            {{-- VIEW DA PÁGINA --}}
+            {{-- ===================================================== --}}
+            {{-- CONTEÚDO --}}
+            {{-- ===================================================== --}}
 
-            @yield('content')
+            <main class="flex-1 p-8">
 
 
-        </main>
+                {{-- MENSAGEM DE SUCESSO --}}
+
+                @if(session('success'))
+
+                    <div class="mb-6 bg-green-100 border border-green-300 text-green-700 rounded-lg p-4">
+
+
+                        {{ session('success') }}
+
+
+                    </div>
+
+                @endif
+
+
+
+                {{-- ERROS DE VALIDAÇÃO --}}
+
+                @if($errors->any())
+
+                    <div class="mb-6 bg-red-100 border border-red-300 text-red-700 rounded-lg p-4">
+
+
+                        <ul class="list-disc pl-5">
+
+
+                            @foreach($errors->all() as $erro)
+
+                                <li>
+
+                                    {{ $erro }}
+
+                                </li>
+
+                            @endforeach
+
+
+                        </ul>
+
+
+                    </div>
+
+                @endif
+
+
+
+                {{-- VIEW DA PÁGINA --}}
+
+                @yield('content')
+
+
+            </main>
+
+
+        </div>
 
 
     </div>
 
 
-</div>
+
+    {{-- ============================================================= --}}
+    {{-- JAVASCRIPT --}}
+    {{-- ============================================================= --}}
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            const sidebar = document.getElementById('sidebar');
+
+            const button = document.getElementById('toggleSidebar');
+
+
+            if (!sidebar || !button) {
+
+                return;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Estado salvo
+            |--------------------------------------------------------------------------
+            */
+
+            let collapsed = localStorage.getItem('sidebar') === 'true';
 
 
 
-{{-- ============================================================= --}}
-{{-- JAVASCRIPT --}}
-{{-- ============================================================= --}}
+            /*
+            |--------------------------------------------------------------------------
+            | Aplicar estado
+            |--------------------------------------------------------------------------
+            */
 
-<script>
-
-document.addEventListener('DOMContentLoaded', function () {
-
-
-    const sidebar = document.getElementById('sidebar');
-
-    const button = document.getElementById('toggleSidebar');
+            function applySidebarState() {
 
 
-    if (!sidebar || !button) {
-
-        return;
-
-    }
+                if (collapsed) {
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Estado salvo
-    |--------------------------------------------------------------------------
-    */
+                    sidebar.classList.remove('w-64');
 
-    let collapsed = localStorage.getItem('sidebar') === 'true';
+                    sidebar.classList.add('w-20');
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Aplicar estado
-    |--------------------------------------------------------------------------
-    */
-
-    function applySidebarState() {
+                    document.body.classList.add('sidebar-mini');
 
 
-        if (collapsed) {
+                } else {
 
 
-            sidebar.classList.remove('w-64');
+                    sidebar.classList.remove('w-20');
 
-            sidebar.classList.add('w-20');
-
-
-            document.body.classList.add('sidebar-mini');
+                    sidebar.classList.add('w-64');
 
 
-        } else {
+                    document.body.classList.remove('sidebar-mini');
 
 
-            sidebar.classList.remove('w-20');
+                }
 
-            sidebar.classList.add('w-64');
-
-
-            document.body.classList.remove('sidebar-mini');
-
-
-        }
-
-    }
+            }
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Estado inicial
-    |--------------------------------------------------------------------------
-    */
+            /*
+            |--------------------------------------------------------------------------
+            | Estado inicial
+            |--------------------------------------------------------------------------
+            */
 
-    applySidebarState();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Botão abrir / fechar
-    |--------------------------------------------------------------------------
-    */
-
-    button.addEventListener('click', function () {
+            applySidebarState();
 
 
-        collapsed = !collapsed;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Botão abrir / fechar
+            |--------------------------------------------------------------------------
+            */
+
+            button.addEventListener('click', function () {
 
 
-        localStorage.setItem(
-            'sidebar',
-            collapsed
-        );
+                collapsed = !collapsed;
 
 
-        applySidebarState();
+                localStorage.setItem(
+                    'sidebar',
+                    collapsed
+                );
 
 
-    });
+                applySidebarState();
 
 
-});
+            });
 
-</script>
+
+        });
+
+    </script>
 
 
 </body>

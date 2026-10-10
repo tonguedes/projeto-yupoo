@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Tenant;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tenant_id',
     ];
 
     /**
@@ -33,6 +35,12 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+
+    public function tenant()
+{
+    return $this->belongsTo(Tenant::class);
+}
 
     /**
      * Get the attributes that should be cast.

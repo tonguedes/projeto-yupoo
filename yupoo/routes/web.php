@@ -17,18 +17,18 @@ Route::middleware(['auth', 'verified'])
     ->get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
+Route::get('/catalogo/{slug}', [CatalogoController::class, 'index'])
+    ->name('catalogo.index');
+
+Route::get('/catalogo/{slug}/{produto}', [CatalogoController::class, 'show'])
+    ->name('catalogo.show');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/categorias', CategoriaController::class);
     Route::resource('/produtos', ProdutoController::class);
-
-    Route::get('/catalogo', [CatalogoController::class, 'index'])
-        ->name('catalogo.index');
-
-    Route::get('/catalogo/{produto}', [CatalogoController::class, 'show'])
-        ->name('catalogo.show');
 
     //deletar imagens do produto
     Route::delete(

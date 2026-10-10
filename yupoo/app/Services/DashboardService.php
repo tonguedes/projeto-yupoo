@@ -11,12 +11,12 @@ class DashboardService
     public function getData(): array
     {
         return [
-
             'totalProdutos' => Produto::count(),
 
             'totalCategorias' => Categoria::count(),
 
-            'totalImagens' => ProdutoImagem::count(),
+            'totalImagens' => ProdutoImagem::whereHas('produto')
+                ->count(),
 
             'produtosSemCapa' => Produto::whereNull('capa')
                 ->count(),
@@ -31,12 +31,12 @@ class DashboardService
 
             'produtosMaisRecentes' => Produto::with([
                 'categoria',
-                'imagens'
+                'imagens',
             ])
                 ->latest()
                 ->take(5)
                 ->get(),
-
         ];
     }
 }
+

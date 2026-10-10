@@ -13,35 +13,35 @@ class ProdutoService
     /**
      * Lista os produtos com busca e filtro.
      */
-  public function listar(array $filtros = [])
-{
-    $query = Produto::with('categoria');
+    public function listar(array $filtros = [])
+    {
+        $query = Produto::with('categoria');
 
-    if (!empty($filtros['busca'])) {
+        if (!empty($filtros['busca'])) {
 
-        $busca = $filtros['busca'];
+            $busca = $filtros['busca'];
 
-        $query->where(function ($q) use ($busca) {
+            $query->where(function ($q) use ($busca) {
 
-            $q->where('nome', 'like', "%{$busca}%")
-                ->orWhere('codigo', 'like', "%{$busca}%");
+                $q->where('nome', 'like', "%{$busca}%")
+                    ->orWhere('codigo', 'like', "%{$busca}%");
 
-        });
+            });
+        }
+
+        if (!empty($filtros['categoria_id'])) {
+
+            $query->where(
+                'categoria_id',
+                $filtros['categoria_id']
+            );
+        }
+
+        return $query
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
     }
-
-    if (!empty($filtros['categoria_id'])) {
-
-        $query->where(
-            'categoria_id',
-            $filtros['categoria_id']
-        );
-    }
-
-    return $query
-        ->latest()
-        ->paginate(12)
-        ->withQueryString();
-}
 
 
     /**
@@ -51,6 +51,9 @@ class ProdutoService
         array $dados,
         StoreProdutoRequest $request
     ): Produto {
+
+        // Define o tenant do usuário logado
+        $dados['tenant_id'] = auth()->user()->tenant_id;
 
         // Upload da capa
         if ($request->hasFile('capa')) {
@@ -80,7 +83,6 @@ class ProdutoService
         return $produto;
     }
 
-
     /**
      * Atualiza um produto.
      */
@@ -104,6 +106,9 @@ class ProdutoService
         }
 
         // Atualiza os dados do produto
+        // Atualiza os dados do produto
+        $dados['tenant_id'] = auth()->user()->tenant_id;
+
         $produto->update($dados);
 
         // Adiciona novas imagens à galeria

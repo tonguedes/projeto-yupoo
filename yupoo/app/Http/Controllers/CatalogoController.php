@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produto;
+use App\Models\Tenant;
 use App\Services\CatalogoService;
 use Illuminate\Http\Request;
 
@@ -12,26 +13,39 @@ class CatalogoController extends Controller
         private CatalogoService $catalogoService
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request, string $slug)
     {
-        $produtos = $this->catalogoService->listar([
-            'busca' => $request->busca,
-            'categoria_id' => $request->categoria_id,
-        ]);
+        $tenant = Tenant::porSlug($slug)->firstOrFail();
 
-        $categorias = $this->catalogoService->categorias();
+        $produtos = $this->catalogoService->listar(
+            $tenant,
+            [
+                'busca' => $request->busca,
+                'categoria_id' => $request->categoria_id,
+            ]
+        );
+
+        $categorias = $this->catalogoService->categorias($tenant);
 
         return view('catalogo.index', compact(
             'produtos',
-            'categorias'
+            'categorias',
+            'tenant'
         ));
     }
 
-    public function show(Produto $produto)
+    public function show(string $slug, Produto $produto)
     {
-        $produto = $this->catalogoService
-            ->encontrarProduto($produto);
+        $tenant = Tenant::porSlug($slug)->firstOrFail();
 
-        return view('catalogo.show', compact('produto'));
+        $produto = $this->catalogoService->encontrarProduto(
+            $tenant,
+            $produto
+        );
+
+        return view('catalogo.show', compact(
+            'produto',
+            'tenant'
+        ));
     }
 }
