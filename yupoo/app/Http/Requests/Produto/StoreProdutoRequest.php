@@ -6,10 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProdutoRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
+public function authorize(): bool
+{
+    return $this->user() !== null
+        && $this->user()->tenant_id !== null
+        && in_array(
+            $this->user()->role,
+            ['tenant_admin', 'super_admin'],
+            true
+        );
+}
 
     public function rules(): array
     {
@@ -26,18 +32,17 @@ class StoreProdutoRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
+       return [
             'categoria_id.required' => 'Selecione uma categoria.',
-            'categoria_id.exists'   => 'Categoria inválida.',
-
-            'nome.required'         => 'Informe o nome do produto.',
-
-            'capa.image'            => 'A capa deve ser uma imagem.',
-            'capa.max'              => 'A capa deve ter no máximo 2MB.',
-
-            'imagens.array'         => 'As imagens são inválidas.',
-            'imagens.*.image'       => 'Cada arquivo deve ser uma imagem.',
-            'imagens.*.max'         => 'Cada imagem deve ter no máximo 2MB.',
+            'categoria_id.exists' => 'A categoria não existe ou não pertence à sua empresa.',
+            'nome.required' => 'Informe o nome do produto.',
+            'capa.image' => 'A capa deve ser uma imagem.',
+            'capa.mimes' => 'A capa deve estar no formato JPG, JPEG, PNG ou WEBP.',
+            'capa.max' => 'A capa deve ter no máximo 2MB.',
+            'imagens.array' => 'As imagens são inválidas.',
+            'imagens.*.image' => 'Cada arquivo deve ser uma imagem.',
+            'imagens.*.mimes' => 'As imagens devem ser JPG, JPEG, PNG ou WEBP.',
+            'imagens.*.max' => 'Cada imagem deve ter no máximo 2MB.',
         ];
     }
 }

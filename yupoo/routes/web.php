@@ -5,6 +5,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\ProdutoImagemController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuperAdmin\EmpresaController;
+use App\Http\Controllers\SuperAdmin\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,6 +18,36 @@ use App\Http\Controllers\DashboardController;
 Route::middleware(['auth', 'verified'])
     ->get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
+
+
+
+Route::middleware(['auth', 'superadmin'])
+    ->prefix('superadmin')
+    ->name('superadmin.')
+    ->group(
+        function () {
+            Route::get('/empresas', [EmpresaController::class, 'index'])
+                ->name('empresas.index');
+
+
+            Route::get('/empresas/criar', [EmpresaController::class, 'create'])
+                ->name('empresas.create');
+
+            Route::post('/empresas', [EmpresaController::class, 'store'])
+                ->name('empresas.store');
+
+
+            Route::get('/empresas/{empresa}/usuarios/criar', [UsuarioController::class, 'create'])
+                ->name('empresas.usuarios.create');
+
+            Route::post('/empresas/{empresa}/usuarios', [UsuarioController::class, 'store'])
+                ->name('empresas.usuarios.store');
+
+
+        }
+    );
+
+
 
 Route::get('/catalogo/{slug}', [CatalogoController::class, 'index'])
     ->name('catalogo.index');

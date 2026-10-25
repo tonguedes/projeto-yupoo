@@ -11,7 +11,8 @@ class CatalogoController extends Controller
 {
     public function __construct(
         private CatalogoService $catalogoService
-    ) {}
+    ) {
+    }
 
     public function index(Request $request, string $slug)
     {
@@ -34,14 +35,19 @@ class CatalogoController extends Controller
         ));
     }
 
-    public function show(string $slug, Produto $produto)
+
+
+    public function show(string $slug, int $produto)
     {
         $tenant = Tenant::porSlug($slug)->firstOrFail();
 
-        $produto = $this->catalogoService->encontrarProduto(
-            $tenant,
-            $produto
-        );
+        $produto = Produto::withoutGlobalScope(
+            \App\Models\Scopes\TenantScope::class
+        )
+            ->where('tenant_id', $tenant->id)
+            ->where('id', $produto)
+            ->with(['categoria', 'imagens'])
+            ->firstOrFail();
 
         return view('catalogo.show', compact(
             'produto',

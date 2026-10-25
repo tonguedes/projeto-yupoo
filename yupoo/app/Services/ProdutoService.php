@@ -4,154 +4,248 @@ namespace App\Services;
 
 use App\Http\Requests\Produto\StoreProdutoRequest;
 use App\Http\Requests\Produto\UpdateProdutoRequest;
+use App\Models\Categoria;
 use App\Models\Produto;
 use App\Models\ProdutoImagem;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProdutoService
 {
-    /**
-     * Lista os produtos com busca e filtro.
-     */
     public function listar(array $filtros = [])
     {
         $query = Produto::with('categoria');
 
         if (!empty($filtros['busca'])) {
-
             $busca = $filtros['busca'];
 
             $query->where(function ($q) use ($busca) {
-
                 $q->where('nome', 'like', "%{$busca}%")
                     ->orWhere('codigo', 'like', "%{$busca}%");
-
             });
         }
 
         if (!empty($filtros['categoria_id'])) {
-
-            $query->where(
-                'categoria_id',
-                $filtros['categoria_id']
-            );
+            $query->where('categoria_id', $filtros['categoria_id']);
         }
 
-        return $query
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+        return $query->latest()->paginate(12)->withQueryString();
     }
 
-
-    /**
-     * Cria um novo produto.
-     */
     public function store(
         array $dados,
         StoreProdutoRequest $request
     ): Produto {
+        $usuario = $request->user();
 
-        // Define o tenant do usuário logado
-        $dados['tenant_id'] = auth()->user()->tenant_id;
+        $this->verificarAdministrador(
+            $usuario?->tenant_id,
+            $usuario?->role
+        );
 
-        // Upload da capa
-        if ($request->hasFile('capa')) {
+        $this->validarCategoria(
+            (int) $dados['categoria_id'],
+            (int) $usuario->tenant_id
+        );
 
-            $dados['capa'] = $request->file('capa')
-                ->store('produtos/capa', 'public');
-        }
+        $dados['tenant_id'] = $usuario->tenant_id;
 
-        // Cria o produto
-        $produto = Produto::create($dados);
+        unset($dados['imagens']);
 
-        // Salva as imagens da galeria
-        if ($request->hasFile('imagens')) {
+        $arquivos = [];
 
-            foreach ($request->file('imagens') as $imagem) {
+        try {
+            if ($request->hasFile('capa')) {
+                $capa = $request->file('capa')->store(
+                    'produtos/capa',
+                    'public'
+                );
 
-                ProdutoImagem::create([
-                    'produto_id' => $produto->id,
-                    'imagem' => $imagem->store(
-                        'produtos/galeria',
-                        'public'
-                    ),
-                ]);
+                $dados['capa'] = $capa;
+                $arquivos[] = $capa;
             }
-        }
 
-        return $produto;
+            return DB::transaction(function () use (
+                $dados,
+                $request,
+                &$arquivos
+            ) {
+                $produto = Produto::create($dados);
+
+                if ($request->hasFile('imagens')) {
+                    foreach ($request->file('imagens') as $imagem) {
+                        $caminho = $imagem->store(
+                            'produtos/galeria',
+                            'public'
+                        );
+
+                        $arquivos[] = $caminho;
+
+                        ProdutoImagem::create([
+                            'produto_id' => $produto->id,
+                            'imagem' => $caminho,
+                        ]);
+                    }
+                }
+
+                return $produto;
+            });
+        } catch (\Throwable $erro) {
+            foreach ($arquivos as $arquivo) {
+                Storage::disk('public')->delete($arquivo);
+            }
+
+            throw $erro;
+        }
     }
 
-    /**
-     * Atualiza um produto.
-     */
     public function update(
         Produto $produto,
         array $dados,
         UpdateProdutoRequest $request
     ): Produto {
+        $usuario = $request->user();
 
-        // Atualiza a capa
-        if ($request->hasFile('capa')) {
+        $this->verificarAdministrador(
+            $usuario?->tenant_id,
+            $usuario?->role
+        );
 
-            if ($produto->capa) {
+        abort_unless(
+            (int) $usuario->tenant_id === (int) $produto->tenant_id,
+            403,
+            'Você não tem permissão para alterar este produto.'
+        );
 
-                Storage::disk('public')
-                    ->delete($produto->capa);
+        $this->validarCategoria(
+            (int) $dados['categoria_id'],
+            (int) $usuario->tenant_id
+        );
+
+        unset($dados['tenant_id'], $dados['imagens']);
+
+        $capaAntiga = $produto->capa;
+        $novaCapa = null;
+        $novasImagens = [];
+
+        try {
+            if ($request->hasFile('capa')) {
+                $novaCapa = $request->file('capa')->store(
+                    'produtos/capa',
+                    'public'
+                );
+
+                $dados['capa'] = $novaCapa;
             }
 
-            $dados['capa'] = $request->file('capa')
-                ->store('produtos/capa', 'public');
-        }
+            DB::transaction(function () use (
+                $produto,
+                $dados,
+                $request,
+                &$novasImagens
+            ) {
+                $produto->update($dados);
 
-        // Atualiza os dados do produto
-        // Atualiza os dados do produto
-        $dados['tenant_id'] = auth()->user()->tenant_id;
+                if ($request->hasFile('imagens')) {
+                    foreach ($request->file('imagens') as $imagem) {
+                        $caminho = $imagem->store(
+                            'produtos/galeria',
+                            'public'
+                        );
 
-        $produto->update($dados);
+                        $novasImagens[] = $caminho;
 
-        // Adiciona novas imagens à galeria
-        if ($request->hasFile('imagens')) {
-
-            foreach ($request->file('imagens') as $imagem) {
-
-                ProdutoImagem::create([
-                    'produto_id' => $produto->id,
-                    'imagem' => $imagem->store(
-                        'produtos/galeria',
-                        'public'
-                    ),
-                ]);
+                        ProdutoImagem::create([
+                            'produto_id' => $produto->id,
+                            'imagem' => $caminho,
+                        ]);
+                    }
+                }
+            });
+        } catch (\Throwable $erro) {
+            if ($novaCapa !== null) {
+                Storage::disk('public')->delete($novaCapa);
             }
+
+            foreach ($novasImagens as $arquivo) {
+                Storage::disk('public')->delete($arquivo);
+            }
+
+            throw $erro;
         }
 
-        return $produto;
+        if ($novaCapa !== null && $capaAntiga !== null) {
+            Storage::disk('public')->delete($capaAntiga);
+        }
+
+        return $produto->refresh();
     }
 
-
-    /**
-     * Remove um produto.
-     */
     public function destroy(Produto $produto): void
     {
-        // Remove as imagens da galeria
-        foreach ($produto->imagens as $imagem) {
+        $usuario = auth()->user();
 
-            Storage::disk('public')
-                ->delete($imagem->imagem);
+        $this->verificarAdministrador(
+            $usuario?->tenant_id,
+            $usuario?->role
+        );
 
-            $imagem->delete();
+        abort_unless(
+            (int) $usuario->tenant_id === (int) $produto->tenant_id,
+            403,
+            'Você não tem permissão para remover este produto.'
+        );
+
+        $arquivos = $produto->imagens
+            ->pluck('imagem')
+            ->filter()
+            ->push($produto->capa)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        DB::transaction(function () use ($produto) {
+            $produto->imagens()->delete();
+            $produto->delete();
+        });
+
+        foreach ($arquivos as $arquivo) {
+            Storage::disk('public')->delete($arquivo);
         }
+    }
 
-        // Remove a capa
-        if ($produto->capa) {
+    private function verificarAdministrador(
+        ?int $tenantId,
+        ?string $role
+    ): void {
+        abort_unless(
+            $tenantId !== null
+                && in_array(
+                    $role,
+                    ['tenant_admin', 'super_admin'],
+                    true
+                ),
+            403,
+            'Apenas administradores de empresas podem gerenciar produtos.'
+        );
+    }
 
-            Storage::disk('public')
-                ->delete($produto->capa);
+    private function validarCategoria(
+        int $categoriaId,
+        int $tenantId
+    ): void {
+        $categoriaValida = Categoria::query()
+            ->whereKey($categoriaId)
+            ->where('tenant_id', $tenantId)
+            ->exists();
+
+        if (!$categoriaValida) {
+            throw ValidationException::withMessages([
+                'categoria_id' => 'Selecione uma categoria da sua empresa.',
+            ]);
         }
-
-        // Remove o produto
-        $produto->delete();
     }
 }
+

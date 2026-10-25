@@ -266,6 +266,24 @@
 
                 </div>
 
+                {{-- EMPRESAS --}}
+                @if (Auth::user()->isSuperAdmin())
+                            <a href="{{ route('superadmin.empresas.index') }}" class="menu-item {{ request()->routeIs('superadmin.empresas.*')
+                    ? 'bg-slate-800 border-l-4 border-indigo-500'
+                    : '' }}">
+
+                                <x-heroicon-o-building-office class="w-6 h-6" />
+
+                                <span class="menu-text">
+                                    Empresas
+                                </span>
+
+                                <span class="sidebar-tooltip">
+                                    Empresas
+                                </span>
+                            </a>
+                @endif
+
 
                 {{-- DASHBOARD --}}
 
